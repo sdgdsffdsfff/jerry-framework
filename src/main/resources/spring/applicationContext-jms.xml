@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.apache.org/schema/core" xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd 
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd 
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd 
+     http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+     http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.4.2.xsd">
+
+	<context:annotation-config />
+
+	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+		destroy-method="stop">
+		<property name="connectionFactory">
+			<ref bean="AMQConnectionFactory" />
+		</property>
+	</bean>
+
+	<bean id="prefetchPolicy" class="org.apache.activemq.ActiveMQPrefetchPolicy">
+		<property name="all">
+			<value>1</value>
+		</property>
+	</bean>
+
+	<!-- 
+	<amq:connectionFactory id="AMQConnectionFactory"
+		prefetchPolicy="#prefetchPolicy"
+		brokerURL="failover:(tcp://10.10.1.200:61616?daemon=true&amp;keepAlive=true)?randomize=true" />
+	 -->
+		
+	<amq:connectionFactory id="AMQConnectionFactory"
+		prefetchPolicy="#prefetchPolicy" brokerURL="zkjms:(zk://jms)" />
+
+
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsFactory" />
+	</bean>
+
+	<amq:queue name="QUEUE_TEST" physicalName="com.hehua.test.queue" />
+
+	<context:component-scan base-package="com.hehua.framework.jms" />
+</beans>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd 
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd 
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd 
+     http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd">
+
+	<context:annotation-config />
+
+	<bean class="com.hehua.Hehua"/>
+	
+	<bean id="hehuaMessageSource"
+                class="com.hehua.framework.message.HehuaMessageSource">
+                <property name="basenames">
+                        <list>
+                                <value>JdbcResourceBundle</value>
+                        </list>
+                </property>
+        </bean>
+	
+	<bean id="messageSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="defaultDataSource"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="messageSqlSessionFactory"/>
+        <property name="basePackage" value="com.hehua.framework.message" />
+    </bean>
+    
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="messageSqlSessionFactory"/>
+        <property name="basePackage" value="com.hehua.framework.config.database" />
+    </bean>
+
+    <context:annotation-config/>
+	<context:component-scan base-package="com.hehua.framework.message"/>
+	<context:component-scan base-package="com.hehua.framework.config"/>
+</beans>

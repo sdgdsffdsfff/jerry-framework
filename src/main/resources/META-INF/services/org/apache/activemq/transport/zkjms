@@ -1,0 +1,1 @@
+class=com.hehua.framework.jms.transport.ZookeeperConfigTransportFactory
